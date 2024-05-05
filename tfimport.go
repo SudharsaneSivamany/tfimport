@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/tfimport/internal/contains"
-	"github.com/tfimport/internal/importcheck"
-	"github.com/tfimport/internal/importrun/azure"
-	"github.com/tfimport/internal/importrun/google"
-	"github.com/tfimport/internal/provider"
-	"github.com/tfimport/internal/terraform"
+	"github.com/SudharsaneSivamany/tfimport/internal/contains"
+	"github.com/SudharsaneSivamany/tfimport/internal/importcheck"
+	"github.com/SudharsaneSivamany/tfimport/internal/importrun/azure"
+	"github.com/SudharsaneSivamany/tfimport/internal/importrun/google"
+	"github.com/SudharsaneSivamany/tfimport/internal/provider"
+	"github.com/SudharsaneSivamany/tfimport/internal/terraform"
 )
 
 // Main function to start the tool
