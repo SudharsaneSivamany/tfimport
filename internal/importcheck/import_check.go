@@ -4,47 +4,48 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 )
 
 func Import_check() string {
-	cmd := exec.Command("terraform", "plan")
+	cmd := exec.Command("terraform", "plan", "-no-color")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		errors := strings.Split(string(out), "\n")
+		// Input paragraph
+		errlines := strings.Split(string(out), "\n")
+
+		// Regular expression pattern for start and end markers
 		startPattern := `While attempting to import an existing object to`
-		endPattern := `the provider detected that no object exists with the given id. Only`
-		foundStart := false
-		foundEnd := false
+		endPattern := `", the provider detected that no object exists with the given id. Only`
+
+		var errorLinesnumber []int
+		var concatErrorLines []string
 		var addressError []string
 		var unknown_error_count int = 0
-		for _, line := range errors {
-			// Check if the line matches the startPattern
-			if !foundStart && regexp.MustCompile(startPattern).MatchString(line) {
-				foundStart = true
-				continue
-			}
 
-			// Check if the line matches the endPattern
-			if foundStart && !foundEnd && regexp.MustCompile(endPattern).MatchString(line) {
-				foundEnd = true
-				break
+		for i := 0; i < len(errlines); i++ {
+			if strings.Contains(errlines[i], startPattern) {
+				errorLinesnumber = append(errorLinesnumber, i)
 			}
-
-			// Output the line if it's between startPattern and endPattern
-			if foundStart && !foundEnd {
-				line = strings.Split(line, `",`)[0]
-				line = strings.ReplaceAll(line, `[\"`, `[\`)
-				line = strings.ReplaceAll(line, `\"]`, `\]`)
-				line = strings.Split(line, `"`)[1]
-				line = strings.ReplaceAll(line, `[\`, `["`)
-				line = strings.ReplaceAll(line, `\]`, `"]`)
-				addressError = append(addressError, line)
-				foundStart = false
-				foundEnd = false
-				unknown_error_count += 1
+		}
+		errorLinesnumber = append(errorLinesnumber, len(errlines)-1)
+		for i := 0; i < len(errorLinesnumber)-1; i++ {
+			var temp string = ""
+			for j := errorLinesnumber[i]; j < errorLinesnumber[i+1]; j++ {
+				temp = temp + errlines[j] + " "
 			}
+			concatErrorLines = append(concatErrorLines, temp)
+		}
+		for i := 0; i < len(concatErrorLines); i++ {
+			line := strings.Split(concatErrorLines[i], startPattern)[1]
+			line = strings.Split(line, endPattern)[0]
+			line = strings.ReplaceAll(line, `[\"`, `[\`)
+			line = strings.ReplaceAll(line, `\"]`, `\]`)
+			line = strings.Split(line, `"`)[1]
+			line = strings.ReplaceAll(line, `[\`, `["`)
+			line = strings.ReplaceAll(line, `\]`, `"]`)
+			addressError = append(addressError, line)
+			unknown_error_count += 1
 		}
 		file, _ := os.ReadFile("./import.tf")
 		lines := strings.Split(string(file), "\n")
