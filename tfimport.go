@@ -2,15 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 
-	"github.com/SudharsaneSivamany/tfimport/internal/contains"
-	"github.com/SudharsaneSivamany/tfimport/internal/importcheck"
-	"github.com/SudharsaneSivamany/tfimport/internal/importrun/azure"
-	"github.com/SudharsaneSivamany/tfimport/internal/importrun/google"
-	"github.com/SudharsaneSivamany/tfimport/internal/provider"
-	"github.com/SudharsaneSivamany/tfimport/internal/terraform"
+	"example.com/tfimport/internal/contains"
+	"example.com/tfimport/internal/importcheck"
+	"example.com/tfimport/internal/importrun/azure"
+	"example.com/tfimport/internal/importrun/google"
+	"example.com/tfimport/internal/provider"
+	"example.com/tfimport/internal/terraform"
 )
 
 // Main function to start the tool
@@ -32,6 +34,11 @@ func main() {
 		if op2 != nil {
 			log.Fatal(op2)
 		}
+		// used for calling provider json data.
+		google_provider := 0
+		var google_provider_data map[string]string
+		azurerm_provider := 0
+		var azurerm_provider_data map[string]string
 		var import_drive string = "proceed"
 		for import_drive == "proceed" {
 
@@ -50,13 +57,49 @@ func main() {
 					after := resource_list[res_list].(map[string]interface{})["change"].(map[string]interface{})["after"].(map[string]interface{})
 					if contains.Contains(change, "create") && mode == "managed" {
 						if provider_name == "registry.terraform.io/hashicorp/azurerm" {
+							if azurerm_provider == 0 {
+								url := "https://raw.githubusercontent.com/SudharsaneSivamany/json/main/provider_azurerm.json"
+								// Send HTTP GET request
+								resp, err := http.Get(url)
+								if err != nil {
+									fmt.Println("Error fetching JSON data:", err)
+									return
+								}
+								defer resp.Body.Close()
+								// Decode JSON response
+
+								err = json.NewDecoder(resp.Body).Decode(&azurerm_provider_data)
+								if err != nil {
+									fmt.Println("Error decoding JSON data:", err)
+									return
+								}
+								azurerm_provider += 1
+							}
 							pck := provider.Provider_config_key(address, res_type, mode, name, state)
 							subs := provider_json_file[pck]
-							each_base_import_count = azure.Azure(subs, res_type, address, after)
+							each_base_import_count = azure.Azure(azurerm_provider_data, subs, res_type, address, after)
 							total_base_import_count = total_base_import_count + each_base_import_count
 						}
 						if provider_name == "registry.terraform.io/hashicorp/google" {
-							each_base_import_count = google.Google(res_type, address, after)
+							if google_provider == 0 {
+								url := "https://raw.githubusercontent.com/SudharsaneSivamany/json/main/provider_google.json"
+								// Send HTTP GET request
+								resp, err := http.Get(url)
+								if err != nil {
+									fmt.Println("Error fetching JSON data:", err)
+									return
+								}
+								defer resp.Body.Close()
+								// Decode JSON response
+
+								err = json.NewDecoder(resp.Body).Decode(&google_provider_data)
+								if err != nil {
+									fmt.Println("Error decoding JSON data:", err)
+									return
+								}
+								google_provider += 1
+							}
+							each_base_import_count = google.Google(google_provider_data, res_type, address, after)
 							total_base_import_count = total_base_import_count + each_base_import_count
 						}
 					}

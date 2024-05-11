@@ -1,3 +1,3 @@
-module github.com/SudharsaneSivamany/tfimport
+module example.com/tfimport
 
 go 1.22.1
