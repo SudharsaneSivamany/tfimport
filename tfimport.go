@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"os"
 
-	"example.com/tfimport/internal/contains"
-	"example.com/tfimport/internal/importcheck"
-	"example.com/tfimport/internal/importrun/azure"
-	"example.com/tfimport/internal/importrun/google"
-	"example.com/tfimport/internal/provider"
-	"example.com/tfimport/internal/terraform"
+	"github.com/SudharsaneSivamany/tfimport/internal/contains"
+	"github.com/SudharsaneSivamany/tfimport/internal/importcheck"
+	"github.com/SudharsaneSivamany/tfimport/internal/importrun/azure"
+	"github.com/SudharsaneSivamany/tfimport/internal/importrun/google"
+	"github.com/SudharsaneSivamany/tfimport/internal/provider"
+	"github.com/SudharsaneSivamany/tfimport/internal/terraform"
 )
 
 // Main function to start the tool
@@ -36,9 +36,9 @@ func main() {
 		}
 		// used for calling provider json data.
 		google_provider := 0
-		var google_provider_data map[string]string
+		var google_provider_data map[string]interface{}
 		azurerm_provider := 0
-		var azurerm_provider_data map[string]string
+		var azurerm_provider_data map[string]interface{}
 		var import_drive string = "proceed"
 		for import_drive == "proceed" {
 
