@@ -47,8 +47,8 @@ func Azure(data map[string]interface{}, subs_id string, res_type string, address
 			for _, iv := range params {
 				id = strings.ReplaceAll(id, "{{"+iv+"}}", config[iv].(string))
 			}
-			for ik, iv := range value.(map[string]interface{})["change"].(map[string]interface{}) {
-				id = strings.ReplaceAll(id, ik, iv.(string))
+			for ik, iv := range value.(map[string]interface{})["change"].(map[string]string) {
+				id = strings.ReplaceAll(id, ik, iv)
 			}
 			id = strings.ReplaceAll(id, "{{subscription_id}}", subs_id)
 			address_check, _ := os.ReadFile("./import.tf")
