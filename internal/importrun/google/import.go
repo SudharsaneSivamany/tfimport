@@ -37,7 +37,8 @@ func Google(data map[string]interface{}, res_type string, address string, config
 				id = strings.ReplaceAll(id, "{{"+iv+"}}", config[iv].(string))
 			}
 			for ik, iv := range value.(map[string]interface{})["change"].(map[string]interface{}) {
-				id = strings.ReplaceAll(id, ik, iv.(string))
+				replace := regexp.MustCompile(ik)
+				id = replace.ReplaceAllString(id, iv.(string))
 			}
 			address_check, _ := os.ReadFile("./import.tf")
 			if !strings.Contains(string(address_check), address) {
