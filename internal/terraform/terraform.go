@@ -2,6 +2,7 @@ package terraform
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 )
@@ -9,7 +10,11 @@ import (
 // terraform cmd for plan and show output to json
 func Tfcmd() interface{} {
 	cmd := exec.Command("terraform", "plan", "-out=plan")
-	cmd.Output()
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println("ERROR: Terraform plan completed with error. Please fix it")
+		os.Exit(1)
+	}
 	cmd2 := exec.Command("terraform", "show", "-json", "plan")
 	output, _ := cmd2.Output()
 	var state interface{}

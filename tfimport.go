@@ -19,15 +19,33 @@ import (
 func main() {
 
 	if len(os.Args[:]) <= 1 {
-		panic("Pass arguement setup or plan")
+		fmt.Println(`
+Generates terraform import block from your config tfvars
+Command sub-args:
+  setup = create provider.json to get the subscription_id
+  plan  = create import block
+  
+Examples:
+  ./tfimport.exe setup
+  ./tfimport.exe plan 
+
+Source: https://github.com/SudharsaneSivamany/tfimport`)
+		return
 	}
-	state := terraform.Tfcmd()
-	if state.(map[string]interface{})["errored"].(bool) {
-		panic("ERROR: Terraform plan completed with error. Please fix it")
-	}
+
 	if os.Args[1] == "setup" {
+		state := terraform.Tfcmd()
+		if state.(map[string]interface{})["errored"].(bool) {
+			fmt.Println("ERROR: Terraform plan completed with error. Please fix it")
+			return
+		}
 		provider.Provider_config(state)
 	} else if os.Args[1] == "plan" {
+		state := terraform.Tfcmd()
+		if state.(map[string]interface{})["errored"].(bool) {
+			fmt.Println("ERROR: Terraform plan completed with error. Please fix it")
+			return
+		}
 		pjs, _ := os.ReadFile("./provider.json")
 		var provider_json_file map[string]string
 		op2 := json.Unmarshal(pjs, &provider_json_file)
@@ -119,6 +137,7 @@ func main() {
 		}
 		importcheck.Remove_commented_lines()
 	} else {
-		panic("Pass arguement setup or plan")
+		fmt.Println("Unknown arguement: Supported arguement setup or plan")
+		return
 	}
 }
