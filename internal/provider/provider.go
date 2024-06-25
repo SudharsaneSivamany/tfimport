@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -32,6 +33,8 @@ func Provider_config(state interface{}) {
 
 // provider config key extraction
 func Provider_config_key(address string, resource_type string, mode string, name string, state interface{}) string {
+	pattern := regexp.MustCompile(`\[[^\]]*\]`)
+	address = pattern.ReplaceAllString(address, "[]")
 	count := strings.Count(address, ".")
 	var pck string
 	list_pck := state.(map[string]interface{})["configuration"].(map[string]interface{})["root_module"]
