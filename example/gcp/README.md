@@ -22,9 +22,9 @@ sudo apt update && sudo apt install terraform
 Update the project-id in the main.tf
 
 ```bash
-cd ../../
+wget https://github.com/SudharsaneSivamany/tfimport/releases/download/v0.0.1/tfimport_0.0.1_linux_amd64.tar.gz
 
-go build . 
+tar -xzvf tfimport_0.0.1_linux_amd64.tar.gz 
 
 cp tfimport example/gcp/
 

@@ -15,4 +15,3 @@ tfimport tool is for creating import blocks to import state of your existing inf
 
 ## Pre-requisites
 1. Terraform version >= 1.7.2
-2. Golang package install
