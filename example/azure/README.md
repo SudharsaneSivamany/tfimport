@@ -20,9 +20,9 @@ sudo apt update && sudo apt install terraform
 ```
 
 ```bash
-wget https://github.com/SudharsaneSivamany/tfimport/releases/download/v0.0.1/tfimport_0.0.1_linux_amd64.tar.gz
+wget https://github.com/SudharsaneSivamany/tfimport/releases/download/v0.1.0/tfimport_0.1.0_linux_amd64.tar.gz
 
-tar -xzvf tfimport_0.0.1_linux_amd64.tar.gz 
+tar -xzvf tfimport_0.1.0_linux_amd64.tar.gz 
 
 cp tfimport example/azure/
 
