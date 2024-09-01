@@ -98,7 +98,7 @@ Source: https://github.com/SudharsaneSivamany/tfimport`)
 							each_base_import_count = azure.Azure(azurerm_provider_data, subs, res_type, address, after)
 							total_base_import_count = total_base_import_count + each_base_import_count
 						}
-						if provider_name == "registry.terraform.io/hashicorp/google" {
+						if provider_name == "registry.terraform.io/hashicorp/google" || provider_name == "registry.terraform.io/hashicorp/google-beta" || provider_name == "registry.terraform.io/hashicorp/googleworkspace" {
 							if google_provider == 0 {
 								url := "https://raw.githubusercontent.com/SudharsaneSivamany/json/main/provider_google.json"
 								// Send HTTP GET request
