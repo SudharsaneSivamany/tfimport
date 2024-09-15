@@ -1,6 +1,6 @@
 # tfimport
 
-tfimport tool is for creating import blocks to import state of your existing infrastructure into your terraform modules or resources.
+tfimport tool is for creating import blocks to import state of your existing infrastructure into your terraform modules or resources address in tfstate.
 
 # Arguements
 ```bash
